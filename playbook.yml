@@ -1,0 +1,46 @@
+- hosts: webserver
+  become: yes
+  tasks:
+   - name: test
+     shell: echo $LANG
+     environment:
+       LANG: "en_US.UTF-8"
+   - name: install the latest version of java jdk8
+     yum:
+       name: java-1.8.0-openjdk
+       state: latest
+   - name: install the latest version of epel-release
+     yum:
+       name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+       state: present
+   - name: install the latest version of epel-release
+     yum:
+       name: epel-release
+       state: latest
+   - name: install the latest version of pwgen
+     yum:
+       name: pwgen
+       state: present
+   - name: example copying file with owner and permissions
+     copy:
+       src: mongodb-org-6.0.repo
+       dest: /etc/yum.repos.d/mongodb-org-6.0.repo
+       owner: root
+       group: root
+       mode: 0644
+   - name: runn clean metadata
+     command: yum --enablerepo=mongodb-org-3.6 clean metadata
+     register: mymotd
+   - name: install the latest version of mongodb-org
+     yum:
+       name: mongodb-org
+       state: present
+
+#   - name: install mongo repo
+#     yum_repository:
+#       name: mongodb-org-4.0
+#       description: "mongodb-org-4.0"
+#       baseurl: https://repo.mongodb.org/yum/redhat/$releasever/mongodb-org/testing/x86_64/
+#       gpgkey: https://www.mongodb.org/static/pgp/server-4.0.asc
+#       gpgcheck: yes
+#       enabled: yes
